@@ -32,11 +32,14 @@ class Brick(models.Model):
 
 
 class SetBricks(models.Model):
-    set_number = models.CharField(max_length=100)
-    brick_number = models.CharField(max_length=100)
+    set_number = models.ForeignKey(Set, on_delete=models.CASCADE)
+    brick_number = models.ForeignKey(Brick, on_delete=models.CASCADE)
     type = models.CharField(max_length=15)
     color = models.CharField(max_length=50)
     quantity = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.set_number} {self.brick_number}"
 
     def calculate_price(self):
         try:
