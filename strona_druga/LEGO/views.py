@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.db.models import Sum
 from .models import Set, Brick, SetBricks
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -39,7 +39,6 @@ def lego(request):  # sourcery skip: use-contextlib-suppress
                 "brickprice": 0,
             },
         )
-        set1.save()
 
         for entry in brick_info["data"]:
             (
@@ -68,15 +67,20 @@ def lego(request):  # sourcery skip: use-contextlib-suppress
                     "notes": notes,
                 },
             )
-        brick_obj.save()
+            brick_obj.save()
 
-        set_brick, created = SetBricks.objects.get_or_create(
-            set_number=str(set1),
-            brick_number=str(brick_number),
-            type=brick_type,
-            defaults={"quantity": quantity},
-        )
-        set_brick.save()
+            set_brick, created = SetBricks.objects.get_or_create(
+                set_number=set1,
+                brick_number=brick_obj,
+                type=brick_type,
+                defaults={"quantity": quantity},
+            )
+            set_brick.save()
+            temp_brickprice = SetBricks.objects.filter(set_number=set1).aggregate(
+                sum=Sum("brick_number__avg_price")
+            )
+            set1.brickprice = temp_brickprice["sum"]
+            set1.save()
     context = {"sets": Set.objects.all(), "title": "Kalkulator Lego"}
     return render(request, "lego.html", context)
 
