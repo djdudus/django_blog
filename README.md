@@ -1,5 +1,4 @@
 # Opis
-Działający projekt hostowany jest na serwisie AWS i dostępny pod adresem http://13.53.108.199
 Jest to prosty projekt bloga zbudowany w oparciu o Django. Użytkownicy mogą rejestrować się, logować, tworzyć, edytować i usuwać posty. Blog umożliwia również przeglądanie postów innych użytkowników.
 
 ## Instalacja
